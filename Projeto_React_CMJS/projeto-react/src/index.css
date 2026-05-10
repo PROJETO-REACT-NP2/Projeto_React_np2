@@ -1,0 +1,34 @@
+/* index.css — Reset global e estilos base da aplicação */
+/* Fonte Montserrat do Google Fonts como tipografia padrão */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Reset de box-sizing pra todos os elementos */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Corpo da página — gradiente azul escuro de fundo fixo */
+body {
+    margin: 0;
+    width: 100%;
+    min-width: 100%;
+    overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
+
+    background: linear-gradient(180deg, rgb(6, 23, 54) 0%, #1e3c72 50%, #81b6e4 100%);
+    background-attachment: fixed;
+
+    color: white;
+    text-align: center;
+}
+
+/* Garante Montserrat nos textareas também */
+textarea{
+    font-family: "Montserrat", sans-serif;
+}
+
+#root {
+    width: 100%; 
+    margin: 0 auto; 
+    min-height: 100vh;
+}
