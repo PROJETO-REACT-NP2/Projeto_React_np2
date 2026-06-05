@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoUnichristus from '../assets/logoUnichristus.webp';
+import LogoUnichristus from '../assets/image.png';
 
 // Logo da Unichristus — tamanho fixo de 50px de altura, largura proporcional
 const Logo = () => {

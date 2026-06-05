@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import LogoUnichristusPDF from '../assets/logoUnichristus_convert.png';
+import LogoUnichristusPDF from '../assets/image.png';
 import Row from './Row';
 import CardTributacao from './CardTributacao';
 

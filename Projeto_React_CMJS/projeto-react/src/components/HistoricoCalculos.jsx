@@ -75,7 +75,7 @@ const HistoricoCalculos = () => {
 
     return (
         <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto', minHeight: '60vh' }}>
-            <h2 style={{ marginBottom: '20px', color: '#333' }}>Meu Histórico de Cálculos</h2>
+            <h2 style={{ marginBottom: '20px', color: 'white' }}>Meu Histórico de Cálculos</h2>
             
             {historico.length === 0 ? (
                 <div style={{ padding: '40px', backgroundColor: 'white', borderRadius: '8px', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
