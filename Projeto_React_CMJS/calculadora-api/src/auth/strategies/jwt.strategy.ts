@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth.service';
 import { JwtPayloadDto } from '../dto/jwt-payload.dto';
-import { UserEntity } from '../../user/user.entity';
+import type { User } from '@prisma/client';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,8 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayloadDto): Promise<UserEntity> {
-    const user: UserEntity = await this.authService.validateUser(payload.sub);
+  async validate(payload: JwtPayloadDto): Promise<User> {
+    const user: User = await this.authService.validateUser(payload.sub);
     if (!user) {
       throw new UnauthorizedException('Usuário não autorizado');
     }

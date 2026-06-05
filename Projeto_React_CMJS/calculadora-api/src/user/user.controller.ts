@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggedUser } from '../auth/decorators/logged-user.decorator';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { JWT_AUTH } from '../infra/swagger.config';
 
@@ -17,7 +18,7 @@ export class UserController {
    */
   @Get('profile')
   @ApiOperation({ summary: 'Retorna as informações do perfil do usuário logado.' })
-  getProfile(@LoggedUser() user: User) {
+  getProfile(@LoggedUser() user: any) {
     return {
       id: user.id,
       name: user.name,

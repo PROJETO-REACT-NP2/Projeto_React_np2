@@ -10,7 +10,7 @@ import { CalculoService } from './calculo.service';
 import { CalculoDto } from './dto/calculo.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { LoggedUser } from '../auth/decorators/logged-user.decorator';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JWT_AUTH } from '../infra/swagger.config';
 
@@ -76,7 +76,7 @@ export class CalculoController {
   @ApiBearerAuth(JWT_AUTH)
   @Post('salvar')
   @ApiOperation({ summary: 'Salva os dados simulados no histórico do usuário logado.' })
-  async salvarCalculo(@LoggedUser() user: User, @Body() body: any) {
+  async salvarCalculo(@LoggedUser() user: any, @Body() body: any) {
     try {
       const calculo = await this.calculoService.salvarCalculo(user.id, body);
       return { mensagem: 'Cálculo salvo com sucesso!', dados: calculo };
@@ -93,7 +93,7 @@ export class CalculoController {
   @ApiBearerAuth(JWT_AUTH)
   @Get('historico')
   @ApiOperation({ summary: 'Retorna a lista de históricos de cálculos de um usuário.' })
-  async listarHistorico(@LoggedUser() user: User) {
+  async listarHistorico(@LoggedUser() user: any) {
     try {
       const historico = await this.calculoService.listarHistorico(user.id);
       return historico;
