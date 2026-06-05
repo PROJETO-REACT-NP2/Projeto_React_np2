@@ -7,30 +7,120 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model consultas {
+  id                 BigInt             @id @default(autoincrement())
+  anotacoes_medico   String?
+  codigocid          String?            @db.VarChar(10)
+  data               DateTime?          @db.Date
+  diagnostico        String?
+  encaminhamento     String?
+  hora               DateTime           @db.Time(6)
+  motivo_consulta    String?
+  tipo_consulta      String?            @db.VarChar(255)
+  paciente_id        BigInt
+  prontuario_id      BigInt?
+  responsavel_id     BigInt
+  prontuarios        prontuarios?       @relation(fields: [prontuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkbs65uwcwdhqa5d4fwtww6d0q")
+  pacientes          pacientes          @relation(fields: [paciente_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fke93cdauso5jd1y4bdpox45n4t")
+  responsaveis_saude responsaveis_saude @relation(fields: [responsavel_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkiyditfwtenk47tcci3eycx4ne")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model eventos_sentinelas {
+  id                BigInt    @id @default(autoincrement())
+  data_evento       DateTime  @db.Date
+  descricao         String    @db.VarChar(255)
+  eventos_ocorridos String    @db.VarChar(40)
+  paciente_id       BigInt
+  pacientes         pacientes @relation(fields: [paciente_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk4o3u96oevvvgp8hg2qoelumcj")
+}
+
+model exames {
+  id            BigInt      @id @default(autoincrement())
+  data_exame    DateTime    @db.Date
+  nome_exame    String      @db.VarChar(255)
+  resultado     String?
+  prontuario_id BigInt
+  prontuarios   prontuarios @relation(fields: [prontuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk1e6ree89y5vfbswosdxpufwlm")
+}
+
+model pacientes {
+  id                 BigInt               @id @default(autoincrement())
+  ativo              Boolean
+  cartao_sus         String               @unique(map: "uk8d8lg598vrwwcui6l6ib75b9b") @db.VarChar(255)
+  cpf                String               @unique(map: "uk1mj2svx930q0tkx1d18qa9rtf") @db.VarChar(255)
+  data_entrada       DateTime             @db.Date
+  data_nascimento    DateTime             @db.Date
+  nome_completo      String               @db.VarChar(255)
+  nome_mae           String?              @db.VarChar(255)
+  consultas          consultas[]
+  eventos_sentinelas eventos_sentinelas[]
+  prontuarios        prontuarios?
+}
+
+model prescricoes {
+  id              BigInt      @id @default(autoincrement())
+  data_prescricao DateTime    @db.Date
+  dosagem         String      @db.VarChar(255)
+  instrucoes      String?
+  medicamento     String      @db.VarChar(255)
+  prontuario_id   BigInt
+  prontuarios     prontuarios @relation(fields: [prontuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk9xjlb2k67ceh28tiwsf5yrv9i")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model prontuario_internacoes {
+  prontuario_id        BigInt
+  descricao_internacao String?
+  prontuarios          prontuarios @relation(fields: [prontuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fksekokq7672weu6rux8y2v7s3d")
+
+  @@ignore
+}
+
+model prontuarios {
+  id                     BigInt                   @id @default(autoincrement())
+  data_criacao           DateTime                 @db.Date
+  observacoes_gerais     String?
+  paciente_id            BigInt                   @unique(map: "uk36ysyq299qv4c0h545o0ym9vt")
+  consultas              consultas[]
+  exames                 exames[]
+  prescricoes            prescricoes[]
+  prontuario_internacoes prontuario_internacoes[] @ignore
+  pacientes              pacientes                @relation(fields: [paciente_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkl5ekay41o1tgd5nhba1tnmlw9")
+}
+
+model responsaveis_saude {
+  id                    BigInt      @id @default(autoincrement())
+  email                 String      @unique(map: "ukocd0cedb8opr45wc6t518i47d") @db.VarChar(255)
+  nome_completo         String      @db.VarChar(255)
+  senha                 String      @db.VarChar(255)
+  cargo                 String?     @db.VarChar(50)
+  especialidade         String?     @db.VarChar(100)
+  registro_profissional String?     @db.VarChar(20)
+  consultas             consultas[]
+}
+
 model User {
   id        String    @id @default(uuid())
-  name      String    @db.VarChar(100)
-  email     String    @unique @db.VarChar(100)
-  password  String    @db.VarChar(60)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  name      String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
   calculos  Calculo[]
-
-  @@map("users")
 }
 
 model Calculo {
   id            String   @id @default(uuid())
-  rendaMensal   Float    @map("renda_mensal")
-  custosMensais Float    @map("custos_mensais")
-  tipoCalculo   String   @map("tipo_calculo")
-  profissao     String?  @map("profissao")
-  impostoPF     Float?   @map("imposto_pf")
-  impostoPJ     Float?   @map("imposto_pj")
-  userId        String   @map("user_id")
-  createdAt     DateTime @default(now()) @map("created_at")
-  
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  rendaMensal   Float
+  custosMensais Float
+  tipoCalculo   String
+  profissao     String?
+  impostoPF     Float?
+  impostoPJ     Float?
+  createdAt     DateTime @default(now())
 
-  @@map("calculos")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
