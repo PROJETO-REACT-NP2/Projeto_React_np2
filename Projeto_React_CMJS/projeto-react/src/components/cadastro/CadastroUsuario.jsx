@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -6,6 +6,13 @@ import axios from 'axios';
 // Valida os campos localmente antes de enviar pro endpoint /auth/register.
 const CadastroUsuario = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate('/historico');
+        }
+    }, [navigate]);
+
     const [formData, setFormData] = useState({ nome: '', email: '', idade: '', senha: '' });
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);

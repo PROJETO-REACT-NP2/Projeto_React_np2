@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Tela de login — valida email/senha e faz POST pro /auth/login.
 // Se autenticado, salva o token no localStorage e redireciona pra home.
 const LoginUsuario = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate('/historico');
+        }
+    }, [navigate]);
 
     const [formData, setFormData] = useState({ email: '', senha: '' });
     const [errors, setErrors] = useState({});

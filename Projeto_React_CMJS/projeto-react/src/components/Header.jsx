@@ -2,9 +2,12 @@
 // Contém logo, título e links de roteamento (react-router-dom)
 import React from 'react';
 import Logo from './Logo.jsx';
-import {Link} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const isAuthenticated = !!localStorage.getItem('token');
 
     const linkStyle = {
         color: '#FFF', 
@@ -26,6 +29,11 @@ const Header = () => {
     const handleMouseLeave = (e) => {
         e.target.style.color = '#ccc';
         e.target.style.backgroundColor = 'transparent';
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/');
     };
 
   return (
@@ -71,7 +79,11 @@ const Header = () => {
             <Link to="/ajuda" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>Perguntas Frequentes</Link>
             <Link to="/contato" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Contato </Link>
             <Link to="/historico" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Histórico </Link>
-            <Link to="/login" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Login </Link>  
+            {isAuthenticated ? (
+                <button onClick={handleLogout} style={{...linkStyle, background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', fontFamily: 'inherit'}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Sair </button>
+            ) : (
+                <Link to="/login" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Login </Link>
+            )}
         </nav>
     </header>
   );

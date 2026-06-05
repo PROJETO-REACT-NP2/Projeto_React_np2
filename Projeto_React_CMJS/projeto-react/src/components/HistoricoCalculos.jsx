@@ -38,7 +38,12 @@ const HistoricoCalculos = () => {
                 setHistorico(response.data);
             } catch (err) {
                 console.error("Erro ao buscar histórico:", err);
-                setError('Falha ao carregar o histórico de cálculos.');
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    localStorage.removeItem('token');
+                    navigate('/login');
+                } else {
+                    setError('Falha ao carregar o histórico de cálculos.');
+                }
             } finally {
                 setLoading(false);
             }
