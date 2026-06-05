@@ -70,8 +70,8 @@ const Header = () => {
             <Link to="/" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>Home</Link>
             <Link to="/ajuda" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>Perguntas Frequentes</Link>
             <Link to="/contato" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Contato </Link>
-            {/* <Link to="/cadastro" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Cadastrar </Link> */}
-            <Link to="/login" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Login </Link> 
+            <Link to="/historico" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Histórico </Link>
+            <Link to="/login" style={linkStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> Login </Link>  
         </nav>
     </header>
   );

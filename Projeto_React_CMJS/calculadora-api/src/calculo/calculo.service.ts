@@ -1,7 +1,52 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../integration/db/prisma.service';
 
+/**
+ * Serviço responsável por realizar as lógicas matemáticas de cálculo tributário
+ * e gerenciar a persistência desses cálculos no banco de dados.
+ */
 @Injectable()
 export class CalculoService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Salva o resultado de um cálculo no banco de dados vinculado a um usuário.
+   * @param userId ID do usuário logado.
+   * @param dados Objeto contendo os dados do cálculo (renda, custos, impostos).
+   * @returns O registro do cálculo recém-criado.
+   */
+  async salvarCalculo(userId: string, dados: any) {
+    return this.prisma.calculo.create({
+      data: {
+        userId,
+        rendaMensal: dados.rendaMensal,
+        custosMensais: dados.custosMensais,
+        tipoCalculo: dados.tipoCalculo,
+        profissao: dados.profissao || null,
+        impostoPF: dados.impostoPF || null,
+        impostoPJ: dados.impostoPJ || null,
+      },
+    });
+  }
+
+  /**
+   * Lista o histórico de cálculos de um usuário específico, ordenado do mais recente para o mais antigo.
+   * @param userId ID do usuário logado.
+   * @returns Lista de cálculos realizados pelo usuário.
+   */
+  async listarHistorico(userId: string) {
+    return this.prisma.calculo.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  /**
+   * Executa a simulação simultânea para Pessoa Física e Pessoa Jurídica.
+   * @param rendaMensal Valor da receita/renda bruta.
+   * @param custosMensais Valor das despesas dedutíveis.
+   * @returns Objeto com o comparativo detalhado (PF x PJ).
+   */
   public simularCalculos(rendaMensal: number, custosMensais: number) {
     const renda = rendaMensal || 0;
     const custos = custosMensais || 0;
@@ -18,6 +63,12 @@ export class CalculoService {
     };
   }
 
+  /**
+   * Calcula o Imposto de Renda Pessoa Física (IRPF) com base nas faixas da Receita Federal.
+   * @param rendaMensal Valor bruto recebido.
+   * @param custosMensais Despesas que abatem a base de cálculo.
+   * @returns Objeto contendo o imposto devido e a renda líquida.
+   */
   public calculadoraIRPF(rendaMensal: number, custosMensais: number) {
     const renda = rendaMensal || 0;
     const custos = custosMensais || 0;
@@ -57,6 +108,11 @@ export class CalculoService {
     };
   }
 
+  /**
+   * Calcula a tributação simulada para Pessoa Jurídica (Simples Nacional - Anexo III presumido).
+   * @param rendaMensal Faturamento bruto da empresa.
+   * @returns Objeto com os impostos PJ devidos e a renda líquida.
+   */
   public calculadoraIRPJ(rendaMensal: number) {
     const renda = rendaMensal || 0;
     // Simples Nacional

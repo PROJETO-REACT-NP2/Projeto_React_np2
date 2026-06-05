@@ -23,10 +23,14 @@ import CadastroUsuario from "./components/cadastro/CadastroUsuario.jsx";
 import AjudaPage from './components/AjudaPage/AjudaPage.jsx';
 import ContatoForm from './components/ContatoForm/ContatoForm.jsx';
 import LoginUsuario from "./components/cadastro/LoginUsuario.jsx";
+import HistoricoCalculos from "./components/HistoricoCalculos.jsx";
 
 
-// Detecta automaticamente a URL do backend.
-// No GitHub Codespaces, troca a porta pra :3000. Localmente, usa localhost:3000.
+/**
+ * Detecta automaticamente a URL base do backend.
+ * Resolve conflitos de portas entre ambientes locais (localhost) e GitHub Codespaces.
+ * @returns {string} A URL base da API.
+ */
 const getBackendBaseUrl = () => {
     if (typeof window === 'undefined' || !window.location.href) {
         return 'http://localhost:3000';
@@ -49,6 +53,10 @@ const API_EMAIL_ENDPOINT = `${API_BASE_URL}/email/resultado`;
 const API_CONTATO_ENDPOINT = `${API_BASE_URL}/email/contato`;
 
 
+/**
+ * Componente Raiz da Aplicação (App).
+ * Gerencia o estado global dos cálculos e centraliza as rotas do React Router.
+ */
 function App() {
     
     // Dados do formulário e resultados dos cálculos PF/PJ
@@ -59,9 +67,12 @@ function App() {
     // Controle de visibilidade do chatbot
     const [isChatOpen, setIsChatOpen] = useState(false);
 
-    // Callback chamada pelo <CalculadoraForm /> no submit.
-    // Pega os dados do form, roda os cálculos PF e PJ, atualiza a tela,
-    // e opcionalmente dispara o envio de email pelo backend.
+    /**
+     * Callback chamada pelo <CalculadoraForm /> no submit.
+     * Pega os dados do form, roda os cálculos PF e PJ, atualiza a tela,
+     * tenta salvar no backend e opcionalmente dispara o envio de email.
+     * @param {Object} dadosParaCalculo Os dados preenchidos no formulário.
+     */
     const handleCalculo = async (dadosParaCalculo) => {
         console.log("Iniciando cálculos PF e PJ.");
 
@@ -74,7 +85,7 @@ function App() {
                 profissao: dadosParaCalculo.profissao
             };
 
-            // Executa os cálculos de IRPF e IRPJ
+            // Executa os cálculos de IRPF e IRPJ (localmente para velocidade na interface)
             const resultadoPFLocal = calculadoraIRPF(dadosEntrada.rendaMensal, dadosEntrada.custosMensais);
             const resultadoPJLocal = calculadoraIRPJ(dadosEntrada.rendaMensal, dadosEntrada.profissao);
 
@@ -89,7 +100,7 @@ function App() {
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 150);
 
-            // Se marcou envio por email, faz o POST pro backend
+            // Se marcou envio por email, faz o POST pro backend disparar via SMTP
             if (dadosParaCalculo.enviarEmail && dadosParaCalculo.emailUsuario) {
                 console.log("Disparando email para:", dadosParaCalculo.emailUsuario);
 
@@ -103,6 +114,26 @@ function App() {
                 await axios.post(API_EMAIL_ENDPOINT, dadosParaEmail);
             }
 
+            // Tenta salvar o cálculo no banco de dados, se o usuário possuir token válido
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    await axios.post(`${API_BASE_URL}/calculo/salvar`, {
+                        rendaMensal: dadosEntrada.rendaMensal,
+                        custosMensais: dadosEntrada.custosMensais,
+                        tipoCalculo: dadosEntrada.tipoCalculo,
+                        profissao: dadosEntrada.profissao,
+                        impostoPF: resultadoPFLocal.imposto,
+                        impostoPJ: resultadoPJLocal.imposto
+                    }, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    console.log("Cálculo salvo no histórico do usuário.");
+                } catch (saveError) {
+                    console.error("Erro ao salvar cálculo no histórico:", saveError);
+                }
+            }
+
         } catch (error) {
             console.error("Erro no fluxo de cálculo:", error);
 
@@ -112,7 +143,7 @@ function App() {
             if (error.config && error.config.url === API_EMAIL_ENDPOINT) {
                 errorMessage = "Cálculo realizado, mas houve falha no envio do e-mail.";
             } else {
-                // Limpa tudo pra não ficar resultado parcial na tela
+                // Limpa tudo pra não ficar resultado parcial na tela em caso de falha generalizada
                 setDadosFormulario(null);
                 setResultadoPF(null);
                 setResultadoPJ(null);
@@ -122,7 +153,11 @@ function App() {
         }
     };
     
-    // Envia o formulário de contato pro backend e trata os possíveis erros
+    /**
+     * Envia os dados do formulário de Contato para o endpoint do backend.
+     * @param {Object} formData Objeto contendo nome, email e mensagem do usuário.
+     * @returns {Object} Objeto com sucesso ou mensagem de erro.
+     */
     const handleSendContato = async (formData) => {
         try {
             const response = await axios.post(API_CONTATO_ENDPOINT, formData);
@@ -145,6 +180,9 @@ function App() {
         }
     };
 
+    /**
+     * Alterna o estado de visibilidade do Chatbot (Abre ou Fecha a janela flutuante).
+     */
     const toggleChat = () => setIsChatOpen(prev => !prev);
 
     return (
@@ -162,7 +200,7 @@ function App() {
                                     onOpenChat={toggleChat}
                                 />
 
-                                {/* Só renderiza o resultado se todos os dados estiverem prontos */}
+                                {/* Só renderiza o componente de resultado se todos os dados estiverem prontos no State */}
                                 {dadosFormulario && resultadoPF && resultadoPJ && (
                                     <ResultadoComparacao
                                         dadosEntrada={dadosFormulario}
@@ -178,6 +216,7 @@ function App() {
                     <Route path='/cadastro' element={<CadastroUsuario />} />
                     <Route path='/login' element={<LoginUsuario />} />
                     <Route path='/ajuda' element={<AjudaPage />} />
+                    <Route path='/historico' element={<HistoricoCalculos />} />
 
                     <Route
                         path='/contato'
@@ -185,7 +224,7 @@ function App() {
                     />
                 </Routes>
 
-                {/* Alterna entre o painel do chat aberto e o botão flutuante */}
+                {/* Chatbot Flutuante: Intercala entre a Janela inteira ou apenas o ícone de Toggle */}
                 {isChatOpen && <ChatbotUI onClose={toggleChat} />}
                 {!isChatOpen && <ChatbotToggle isOpen={isChatOpen} onClick={toggleChat} />}
             </main>
@@ -195,4 +234,4 @@ function App() {
     );
 }
 
-export default App;
+export default App;

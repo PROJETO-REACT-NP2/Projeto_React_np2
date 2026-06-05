@@ -1,16 +1,42 @@
-# React + Vite
+# ⚛️ Calculadora Tributária - Interface (Frontend React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta é a interface visual da aplicação, desenvolvida com [React](https://reactjs.org/) + [Vite](https://vitejs.dev/). Este subprojeto é uma SPA (Single Page Application) que apresenta formulários ricos, calculadoras dinâmicas e um **Chatbot Inteligente** implementado com a API Gemini do Google.
 
-Currently, two official plugins are available:
+Os componentes foram construídos de forma modular, com CSS customizado e gerenciamento de estado interno robusto.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📋 Pré-requisitos
 
-## React Compiler
+Para rodar este projeto isoladamente, você precisará de:
+- [Node.js](https://nodejs.org/en/) (Versão 18+ recomendada)
+- Uma chave válida da API do **Google Gemini** para o Chatbot.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Configurando o Ambiente (.env)
 
-## Expanding the ESLint configuration
+Dentro da pasta `projeto-react`, existe um arquivo chamado `.env.example`.
+Copie-o ou o renomeie para `.env` e defina sua chave do Gemini:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```env
+VITE_GEMINI_API_KEY=sua_chave_api_do_gemini_aqui
+```
+*Se você deixar esse arquivo vazio ou inexistente, a aplicação **não carregará** e apresentará uma tela branca devido à inicialização imediata do cliente da Google.*
+
+## 🚀 Passo a Passo de Execução Isolada
+
+Siga estes passos num terminal aberto dentro da pasta `projeto-react`:
+
+1. **Instale as dependências necessárias:**
+   ```bash
+   npm install
+   ```
+
+2. **Inicie o servidor de desenvolvimento (Vite):**
+   ```bash
+   npm run dev
+   ```
+
+A aplicação subirá num endereço local (normalmente `http://localhost:5173/`).
+
+## 📁 Principais Pastas
+- `/src/components/` -> Componentes modulares, divididos por responsabilidade (Formulários, Ajuda, Cadastro, Chatbot).
+- `/src/App.jsx` -> Onde ocorre a montagem do "Layout" e as rotas utilizando `react-router-dom`. Além de ser o cérebro das chamadas aos cálculos principais e à API do Backend.
+- `/src/index.css` -> Onde moram as variáveis do sistema de cores e CSS globais.

@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(100)
+  email     String    @unique @db.VarChar(100)
+  password  String    @db.VarChar(60)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  calculos  Calculo[]
+
+  @@map("users")
+}
+
+model Calculo {
+  id            String   @id @default(uuid())
+  rendaMensal   Float    @map("renda_mensal")
+  custosMensais Float    @map("custos_mensais")
+  tipoCalculo   String   @map("tipo_calculo")
+  profissao     String?  @map("profissao")
+  impostoPF     Float?   @map("imposto_pf")
+  impostoPJ     Float?   @map("imposto_pj")
+  userId        String   @map("user_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("calculos")
+}
