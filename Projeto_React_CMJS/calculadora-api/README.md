@@ -21,10 +21,10 @@ PORT=3000
 # Credenciais do Banco de Dados PostgreSQL (Altere usuário e senha se necessário)
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=calculadora_db
-DB_USER=postgres
-DB_PASSWORD=postgres
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/calculadora_db?schema=public"
+DB_NAME=calculadora
+DB_USER=calculadora_api
+DB_PASSWORD=123
+DATABASE_URL="postgresql://calculadora_api:123@localhost:5432/calculadora?schema=calculadora_schema"
 
 # Autenticação JWT
 JWT_SECRET=sua_chave_secreta_jwt_aqui
