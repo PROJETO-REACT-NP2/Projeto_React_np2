@@ -55,7 +55,7 @@ const LoginUsuario = () => {
             }
 
             const result = await response.json();
-            localStorage.setItem("token", result.token);
+            localStorage.setItem("token", result.accessToken);
             navigate('/');
         } catch (error) {
             console.error("Erro no login:", error);

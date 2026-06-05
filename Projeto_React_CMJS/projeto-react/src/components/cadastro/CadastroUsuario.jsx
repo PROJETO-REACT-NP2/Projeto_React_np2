@@ -83,9 +83,7 @@ const CadastroUsuario = () => {
             }
 
             const result = await response.json();
-
-            // TODO: salvar token no localStorage ou Context API
-            // localStorage.setItem('token', result.token);
+            localStorage.setItem('token', result.accessToken);
 
             navigate('/');
         } catch (error) {
