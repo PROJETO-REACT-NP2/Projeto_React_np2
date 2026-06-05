@@ -29,8 +29,8 @@ export class CalculoController {
   @Public()
   @Post('simular')
   @ApiOperation({ summary: 'Simula o comparativo entre PF e PJ.' })
-  simularCalculo(@Body() dados: CalculoDto) {
-    const { renda, custos } = dados;
+  simularCalculo(@Body() dados: any) {
+    const { renda, custos, profissao } = dados;
 
     if (
       renda === undefined ||
@@ -46,7 +46,7 @@ export class CalculoController {
 
     try {
       const resultadoPF = this.calculoService.calculadoraIRPF(renda, custos);
-      const resultadoPJ = this.calculoService.calculadoraIRPJ(renda);
+      const resultadoPJ = this.calculoService.calculadoraIRPJ(renda, profissao);
 
       return {
         mensagem: `Comparação de PF e PJ realizada com sucesso.`,

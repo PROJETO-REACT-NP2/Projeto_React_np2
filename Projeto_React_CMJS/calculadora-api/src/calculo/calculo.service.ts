@@ -109,15 +109,26 @@ export class CalculoService {
   }
 
   /**
-   * Calcula a tributação simulada para Pessoa Jurídica (Simples Nacional - Anexo III presumido).
+   * Calcula a tributação simulada para Pessoa Jurídica (Simples Nacional).
    * @param rendaMensal Faturamento bruto da empresa.
+   * @param profissao Profissão selecionada (psicologo, advogado, arquiteto).
    * @returns Objeto com os impostos PJ devidos e a renda líquida.
    */
-  public calculadoraIRPJ(rendaMensal: number) {
+  public calculadoraIRPJ(rendaMensal: number, profissao: string = 'psicologo') {
     const renda = rendaMensal || 0;
-    // Simples Nacional
-    const simples_nac = renda * 0.06;
-    const pro_labore = renda * 0.11;
+    
+    // Alíquota inicial do Simples Nacional baseada na profissão
+    let aliquotaSimples = 0.06; // Padrão (Psicólogo/Arquiteto - Anexo III com Fator R)
+    if (profissao === 'advogado') {
+      aliquotaSimples = 0.045; // Advogado - Anexo IV
+    } else if (profissao === 'arquiteto') {
+      aliquotaSimples = 0.06; // Arquiteto - Anexo III
+    } else if (profissao === 'psicologo') {
+      aliquotaSimples = 0.06; // Psicólogo - Anexo III
+    }
+
+    const simples_nac = renda * aliquotaSimples;
+    const pro_labore = renda * 0.11; // 11% de INSS sobre pro-labore
     const perce28 = renda < 1518.01 ? 1518 : renda * 0.28;
     const imposto = simples_nac + pro_labore;
     const rendaLiquida = renda - imposto;

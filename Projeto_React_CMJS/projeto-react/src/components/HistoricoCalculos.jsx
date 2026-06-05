@@ -114,6 +114,11 @@ const HistoricoCalculos = () => {
                                 <span style={{ backgroundColor: '#eef2ff', color: '#4c51bf', padding: '4px 10px', borderRadius: '20px', fontWeight: '600' }}>
                                     {item.tipoCalculo === 'ambos' ? 'Comparação Completa' : `Cálculo ${item.tipoCalculo.toUpperCase()}`}
                                 </span>
+                                {item.profissao && (
+                                    <span style={{ backgroundColor: '#fff0f6', color: '#c53030', padding: '4px 10px', borderRadius: '20px', fontWeight: '600', marginLeft: '10px' }}>
+                                        Profissão: {item.profissao.charAt(0).toUpperCase() + item.profissao.slice(1)}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     ))}
