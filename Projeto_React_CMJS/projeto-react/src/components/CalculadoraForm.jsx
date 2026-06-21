@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-// Formulário principal de entrada de dados tributários.
-// Coleta renda, custos, profissão e opcionalmente o email do usuário.
-// Usa react-hook-form pra validação em tempo real.
+/**
+ * Componente `CalculadoraForm` — Formulário principal de entrada de dados tributários.
+ * 
+ * Coleta renda mensal, custos, profissão e opcionalmente o email do usuário.
+ * Utiliza `react-hook-form` para validação em tempo real dos campos.
+ * 
+ * @param {Object} props
+ * @param {Function} props.onDataSubmit — Callback chamada no submit com os dados normalizados.
+ * @param {Function} props.onOpenChat — Callback para abrir o chatbot (disponível mas não utilizada no JSX atual).
+ * @returns {JSX.Element} Formulário de cálculo tributário.
+ */
 const CalculadoraForm = ({ onDataSubmit, onOpenChat }) => {
 
     // Hooks do react-hook-form — gerencia validação, erros e watch de campos
@@ -16,10 +24,13 @@ const CalculadoraForm = ({ onDataSubmit, onOpenChat }) => {
     const [mensagemSucesso, setMensagemSucesso] = useState(null);
     const [isCalculating, setIsCalculating] = useState(false);
 
-    // Processa o submit do form:
-    // 1. Ativa loading visual por 800ms (UX)
-    // 2. Converte vírgulas pt-BR pra pontos (ex: 5.000 → 5000)
-    // 3. Monta o objeto e chama a callback do App.jsx
+    /**
+     * Processa o submit do formulário.
+     * 1. Ativa loading visual por 800ms (UX).
+     * 2. Converte vírgulas pt-BR para pontos (ex: "5.000" → 5000).
+     * 3. Monta o payload e chama `onDataSubmit` do componente pai.
+     * @param {Object} dados — Dados brutos do react-hook-form.
+     */
     const onSubmit = (dados) => {
         setIsCalculating(true);
 
@@ -232,7 +243,7 @@ const CalculadoraForm = ({ onDataSubmit, onOpenChat }) => {
                 )}
                 
                 <button type="submit" style={primaryButtonStyle} disabled={isCalculating}>
-                    {isCalculating ? "Calculando..." : (enviarEmailCheck ? "Calcular e Enviar" : "Calcular")}
+                    {isCalculating ? (<><span className="loading-spinner"></span>Calculando...</>) : (enviarEmailCheck ? "Calcular e Enviar" : "Calcular")}
                 </button>
 
             </form>

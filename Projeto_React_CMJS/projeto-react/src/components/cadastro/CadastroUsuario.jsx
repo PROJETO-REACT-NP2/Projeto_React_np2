@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { API_BASE_URL } from '../../utils/apiConfig.js';
 
 // Tela de cadastro de novos usuários.
 // Valida os campos localmente antes de enviar pro endpoint /auth/register.
@@ -70,7 +70,7 @@ const CadastroUsuario = () => {
 
         try {
             const payload = { name: formData.nome, email: formData.email, password: formData.senha };
-            const response = await fetch("http://localhost:3000/auth/register", {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)

@@ -1,4 +1,14 @@
-// ResultadoComparacao.jsx — Exibe os resultados PF vs PJ em cards comparativos
+/**
+ * ResultadoComparacao.jsx — Exibe os resultados PF vs PJ em cards comparativos.
+ * 
+ * Responsabilidades:
+ * - Formata valores monetários em BRL com Intl.NumberFormat
+ * - Decide a melhor opção comparando rendaLiquida de PF e PJ
+ * - Gera o link de download do PDF comparativo via @react-pdf/renderer
+ * - Exibe vídeo explicativo sobre a melhor opção tributária
+ * 
+ * @module components/ResultadoComparacao
+ */
 import React from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import GeradorPDF from './GeradorPDF.jsx';

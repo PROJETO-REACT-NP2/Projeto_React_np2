@@ -1,5 +1,21 @@
-// Calcula o IRPF (Pessoa Física) com base na tabela progressiva mensal.
-// Recebe a renda bruta e os custos dedutíveis, retorna o detalhamento completo.
+/**
+ * CalculadoraIR.jsx — Módulo de cálculos tributários PF e PJ.
+ * 
+ * Contém as funções puras de cálculo de impostos:
+ * - `calculadoraIRPF()` — IRPF pela tabela progressiva mensal com regra de transição.
+ * - `calculadoraIRPJ()` — Simples Nacional com diferenciação por profissão (Anexo III vs IV).
+ * 
+ * @module components/CalculadoraIR
+ */
+
+/**
+ * Calcula o IRPF (Pessoa Física) com base na tabela progressiva mensal.
+ * Aplica faixas de alíquota com dedução fixa e regra de redução para rendas baixas.
+ * 
+ * @param {number} rendaMensal — Renda bruta mensal do contribuinte.
+ * @param {number} custosMensais — Custos/despesas dedutíveis mensais.
+ * @returns {{rendaMensal: number, custosMensais: number, basePF: number, deducao: number, imposto: number, rendaLiquida: number}}
+ */
 export function calculadoraIRPF(rendaMensal, custosMensais) {
     const renda = Number(rendaMensal);
     const custos = Number(custosMensais);
@@ -54,9 +70,16 @@ export function calculadoraIRPF(rendaMensal, custosMensais) {
 }
 
 
-// Calcula o IRPJ (Pessoa Jurídica) pelo Simples Nacional.
-// A lógica muda conforme a profissão — psicólogo/arquiteto usam Anexo III,
-// advogado usa Anexo IV (com INSS Patronal separado).
+/**
+ * Calcula o IRPJ (Pessoa Jurídica) pelo Simples Nacional.
+ * Diferencia o cálculo por profissão:
+ * - Psicólogo/Arquiteto → Anexo III (6% + INSS 11% sobre pró-labore de 28%).
+ * - Advogado → Anexo IV (4,5% + INSS 11% + INSS Patronal 20%).
+ * 
+ * @param {number} rendaMensal — Receita bruta mensal da PJ.
+ * @param {string} profissao — Profissão selecionada: "psicologo", "advogado" ou "arquiteto".
+ * @returns {{rendaMensal: number, simples_nac: number, pro_labore: number, inss: number, imposto: number, rendaLiquida: number, inss_patronal?: number}}
+ */
 export function calculadoraIRPJ(rendaMensal, profissao) {
     const renda = Number(rendaMensal);
 
@@ -106,6 +129,25 @@ export function calculadoraIRPJ(rendaMensal, profissao) {
             perce28,
             inss,
             inss_patronal,
+            imposto,
+            rendaLiquida
+        };
+    }
+    else {
+        // Fallback de segurança — profissão não reconhecida.
+        // Usa Anexo III como padrão para evitar crash no ResultadoComparacao.
+        console.warn(`[CalculadoraIRPJ] Profissão desconhecida: "${profissao}". Usando cálculo padrão (Anexo III).`);
+        const simples_nac = renda * 0.06;
+        const pro_labore = renda * 0.28;
+        const inss = pro_labore * 0.11;
+        const imposto = simples_nac + inss;
+        const rendaLiquida = renda - imposto;
+
+        return {
+            rendaMensal: renda,
+            simples_nac,
+            pro_labore,
+            inss,
             imposto,
             rendaLiquida
         };

@@ -1,3 +1,14 @@
+/**
+ * GeradorPDF.jsx — Componente que gera o documento PDF de comparação tributária.
+ * 
+ * Utiliza @react-pdf/renderer para construir um PDF estilizado com:
+ * - Cabeçalho com logo Unichristus
+ * - Barra de resumo (profissão, receita, custos)
+ * - Cards comparativos PF vs PJ com destaque no vencedor
+ * - Rodapé com disclaimer legal
+ * 
+ * @module components/GeradorPDF
+ */
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import LogoUnichristusPDF from '../assets/image.png';

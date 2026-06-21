@@ -11,9 +11,13 @@ import Footer from './components/Footer';
 import ChatbotUI from './components/Chatbot/ChatbotUI.jsx';
 import ChatbotToggle from './components/Chatbot/ChatbotToggle.jsx';
 import ResultadoComparacao from './components/ResultadoComparacao.jsx';
+import NotFound from './components/NotFound.jsx';
 
 // Lógica de cálculos tributários PF e PJ
 import { calculadoraIRPF, calculadoraIRPJ } from './components/CalculadoraIR.jsx';
+
+// Configuração centralizada da API
+import { API_BASE_URL } from './utils/apiConfig.js';
 
 import './App.css';
 import './index.css';
@@ -25,30 +29,7 @@ import ContatoForm from './components/ContatoForm/ContatoForm.jsx';
 import LoginUsuario from "./components/cadastro/LoginUsuario.jsx";
 import HistoricoCalculos from "./components/HistoricoCalculos.jsx";
 
-
-/**
- * Detecta automaticamente a URL base do backend.
- * Resolve conflitos de portas entre ambientes locais (localhost) e GitHub Codespaces.
- * @returns {string} A URL base da API.
- */
-const getBackendBaseUrl = () => {
-    if (typeof window === 'undefined' || !window.location.href) {
-        return 'http://localhost:3000';
-    }
-
-    const currentUrl = window.location.href;
-    const codespacePattern = /-\d+\.app\.github\.dev/;
-    const hostMatch = currentUrl.match(/https:\/\/[^\/]+/);
-    const currentHost = hostMatch ? hostMatch[0] : '';
-
-    if (codespacePattern.test(currentHost)) {
-        return currentHost.replace(/-\d+\.app\.github\.dev/, '-3000.app.github.dev');
-    }
-
-    return 'http://localhost:3000';
-};
-
-const API_BASE_URL = getBackendBaseUrl();
+// Endpoints derivados da URL base
 const API_EMAIL_ENDPOINT = `${API_BASE_URL}/email/resultado`;
 const API_CONTATO_ENDPOINT = `${API_BASE_URL}/email/contato`;
 
@@ -212,16 +193,17 @@ function App() {
                         }
                     />
 
-                    <Route path="*" element={<h2>Página não encontrada.</h2>} />
                     <Route path='/cadastro' element={<CadastroUsuario />} />
                     <Route path='/login' element={<LoginUsuario />} />
                     <Route path='/ajuda' element={<AjudaPage />} />
                     <Route path='/historico' element={<HistoricoCalculos />} />
-
                     <Route
                         path='/contato'
                         element={<ContatoForm onSubmitContato={handleSendContato} />}
                     />
+
+                    {/* Rota catch-all — DEVE ficar por último */}
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
 
                 {/* Chatbot Flutuante: Intercala entre a Janela inteira ou apenas o ícone de Toggle */}

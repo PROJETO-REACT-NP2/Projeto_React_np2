@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../utils/apiConfig.js';
 
 /**
  * Componente de Página `HistoricoCalculos`.
@@ -24,11 +25,6 @@ const HistoricoCalculos = () => {
 
         const fetchHistorico = async () => {
             try {
-                // Configuração base da URL (trata GitHub Codespaces)
-                const API_BASE_URL = window.location.href.includes('.github.dev') 
-                    ? window.location.href.replace(/-\d+\.app\.github\.dev.*/, '-3000.app.github.dev')
-                    : 'http://localhost:3000';
-
                 const response = await axios.get(`${API_BASE_URL}/calculo/historico`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });

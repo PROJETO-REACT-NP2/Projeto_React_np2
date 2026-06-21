@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../utils/apiConfig.js';
 
 // Tela de login — valida email/senha e faz POST pro /auth/login.
 // Se autenticado, salva o token no localStorage e redireciona pra home.
@@ -42,7 +43,7 @@ const LoginUsuario = () => {
 
         try {
             const payload = { email: formData.email, password: formData.senha };
-            const response = await fetch("http://localhost:3000/auth/login", {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
