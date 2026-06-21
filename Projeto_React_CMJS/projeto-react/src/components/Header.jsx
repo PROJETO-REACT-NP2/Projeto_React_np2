@@ -59,6 +59,7 @@ const Header = () => {
         transition: 'all 0.3s ease',
         position: 'relative',
         borderBottom: isActive(path) ? '2px solid #00ccff' : '2px solid transparent',
+        backgroundColor: 'transparent',
     });
 
     const handleMouseEnter = (e, path) => {
