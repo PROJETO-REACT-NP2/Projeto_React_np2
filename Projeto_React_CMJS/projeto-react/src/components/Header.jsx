@@ -43,39 +43,6 @@ const Header = () => {
      */
     const isActive = (path) => location.pathname === path;
 
-    /**
-     * Estilo base de cada link de navegação.
-     * Links ativos recebem destaque visual com cor teal e underline.
-     * @param {string} path — Caminho da rota para verificar se é ativa.
-     * @returns {Object} Estilos CSS-in-JS.
-     */
-    const getLinkStyle = (path) => ({
-        color: isActive(path) ? '#00ccff' : '#ccc',
-        textDecoration: 'none',
-        display: 'inline-block',
-        fontWeight: isActive(path) ? '700' : '500',
-        padding: '8px 20px',
-        borderRadius: '6px',
-        transition: 'all 0.3s ease',
-        position: 'relative',
-        borderBottom: isActive(path) ? '2px solid #00ccff' : '2px solid transparent',
-        backgroundColor: 'transparent',
-    });
-
-    const handleMouseEnter = (e, path) => {
-        if (!isActive(path)) {
-            e.target.style.color = '#007284';
-            e.target.style.backgroundColor = 'rgba(0, 114, 132, 0.1)';
-        }
-    };
-
-    const handleMouseLeave = (e, path) => {
-        if (!isActive(path)) {
-            e.target.style.color = '#ccc';
-            e.target.style.backgroundColor = 'transparent';
-        }
-    };
-
     return (
         <header style={{
             padding: '15px 0',
@@ -138,9 +105,7 @@ const Header = () => {
                     <Link
                         key={to}
                         to={to}
-                        style={getLinkStyle(to)}
-                        onMouseEnter={(e) => handleMouseEnter(e, to)}
-                        onMouseLeave={(e) => handleMouseLeave(e, to)}
+                        className={`nav-item ${isActive(to) ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
                         {label}
@@ -150,25 +115,14 @@ const Header = () => {
                 {isAuthenticated ? (
                     <button
                         onClick={handleLogout}
-                        style={{
-                            ...getLinkStyle('/logout'),
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: '16px',
-                            fontFamily: 'inherit',
-                        }}
-                        onMouseEnter={(e) => handleMouseEnter(e, '/logout')}
-                        onMouseLeave={(e) => handleMouseLeave(e, '/logout')}
+                        className={`nav-item nav-item-btn ${isActive('/logout') ? 'active' : ''}`}
                     >
                         Sair
                     </button>
                 ) : (
                     <Link
                         to="/login"
-                        style={getLinkStyle('/login')}
-                        onMouseEnter={(e) => handleMouseEnter(e, '/login')}
-                        onMouseLeave={(e) => handleMouseLeave(e, '/login')}
+                        className={`nav-item ${isActive('/login') ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
                         Login

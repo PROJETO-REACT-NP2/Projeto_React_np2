@@ -403,3 +403,42 @@ body {
     vertical-align: middle;
     margin-right: 8px;
 }
+
+/* ---- Estilos do Header Nav ---- */
+.nav-item {
+    color: #ccc;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+    border-bottom: 2px solid transparent;
+    background-color: transparent;
+}
+
+.nav-item-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.nav-item:hover {
+    color: #007284;
+    background-color: rgba(0, 114, 132, 0.1);
+}
+
+.nav-item.active {
+    color: #00ccff;
+    font-weight: 700;
+    border-bottom: 2px solid #00ccff;
+    background-color: transparent;
+}
+
+.nav-item.active:hover {
+    color: #00ccff;
+    background-color: transparent;
+}
