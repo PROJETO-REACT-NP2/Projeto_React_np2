@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { GoogleGenAI } from '@google/genai';
-import IconeContinha from '../../assets/IconChatbootIA.png';
+import IconeContinha from '../../assets/iconChatbootIA.png';
 
 // Inicializa o cliente da API do Google Gemini com a chave do .env
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import IconChatbot from './IconChatbot'; 
-import chatIcon from '../../assets/IconChatbootIA.png'; 
+import chatIcon from '../../assets/iconChatbootIA.png'; 
 
 // Botão flutuante que abre/fecha o chat.
 // Mostra um tooltip quando o mouse passa por cima.
